@@ -9,15 +9,12 @@ class Penjualan extends BD_Controller {
     {
         // Construct the parent class
         parent::__construct();
-        // $this->auth();
+        $this->auth();
         $this->load->database();
     }
 
     public function index_get()
     {
-        // $db = $this->db;
-        // $db->select('*');
-        // $db->join('');
         // $penjualan = $this->db->select('penjualan.*, barang.*')
         $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
                             ->from('penjualan')
