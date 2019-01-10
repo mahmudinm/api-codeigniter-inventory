@@ -18,30 +18,33 @@ class Auth extends BD_Controller
         $this->load->model('M_main');
     }
 
-    
 
-    public function login_post()
+    public function index_post()
     {
-        $u = $this->post('username'); //Username Posted
-        $p = sha1($this->post('password')); //Pasword Posted
-        $q = array('username' => $u); //For where query condition
+        $username = $this->post('username');
+        $password = md5($this->post('password'));
         $kunci = $this->config->item('thekey');
-        $invalidLogin = ['status' => 'Invalid Login']; //Respon if login invalid
-        $val = $this->M_main->get_user($q)->row(); //Model to get single data row from database base on username
-        if ($this->M_main->get_user($q)->num_rows() == 0) {
-            $this->response($invalidLogin, REST_Controller::HTTP_NOT_FOUND);
-        }
-        $match = $val->password;   //Get password for user from database
-        if ($p == $match) {  //Condition if password matched
-            $token['id'] = $val->id;  //From here
-            $token['username'] = $u;
+        
+        $invalidLogin = ['status' => 'invalid login'];
+
+        $check_login = $this->Auth_model->check_login($username, $password);
+        
+        // echo $username . ' ' . $password;
+
+        if (!$check_login) {
+            $this->response($invalidLogin, 200);
+        } else {
+            // $token['id'] = $data[0]['id'];  //From here
+            $token['username'] = $username;
             $date = new DateTime();
             $token['iat'] = $date->getTimestamp();
             $token['exp'] = $date->getTimestamp() + 60*60*5; //To here is to generate token
             $output['token'] = JWT::encode($token, $kunci); //This is the output token
-            $this->set_response($output, REST_Controller::HTTP_OK); //This is the respon if success
-        } else {
-            $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
+            $output['username'] = $username; //This is the output token
+            $output['id'] = $check_login['id']; //This is the output token
+            $this->response($output, 200);
+            // $this->response($output, 200);
         }
-    }
+
+    }    
 }

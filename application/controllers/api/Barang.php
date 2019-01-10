@@ -61,9 +61,6 @@ class Barang extends BD_Controller {
 
     public function update_post($id)
     {
-        // $id = $this->put('id');
-        // $this->response($id);
-        // $this->response($this->put)
         $data = [
             'kode' => $this->post('kode'),
             'nama' => $this->post('nama'),
@@ -72,7 +69,6 @@ class Barang extends BD_Controller {
             'ukuran' => $this->post('ukuran'),
             'kategori' => $this->post('kategori')
         ];
-        // $this->response($data);
 
         $config['upload_path'] = './upload/';
         $config['allowed_types'] = 'gif|jpg|png|jpeg';
