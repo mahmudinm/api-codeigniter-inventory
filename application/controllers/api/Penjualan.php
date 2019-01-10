@@ -15,7 +15,18 @@ class Penjualan extends BD_Controller {
 
     public function index_get()
     {
-        $penjualan = $this->db->get('penjualan')->result();
+        // $db = $this->db;
+        // $db->select('*');
+        // $db->join('');
+        // $penjualan = $this->db->select('penjualan.*, barang.*')
+        $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
+                            ->from('penjualan')
+                            ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
+                            ->get()
+                            ->result();
+
+
+        // $penjualan = $this->db->get('penjualan')->result();
         $response['status'] = "success";
         $response['data'] = $penjualan;
         
