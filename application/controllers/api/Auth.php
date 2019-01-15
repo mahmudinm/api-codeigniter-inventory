@@ -39,6 +39,7 @@ class Auth extends BD_Controller
             $date = new DateTime();
             $token['iat'] = $date->getTimestamp();
             $token['exp'] = $date->getTimestamp() + 60*60*5; //To here is to generate token
+            $output['status'] = 'success'; //This is the output token
             $output['token'] = JWT::encode($token, $kunci); //This is the output token
             $output['username'] = $username; //This is the output token
             $output['id'] = $check_login['id']; //This is the output token

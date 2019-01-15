@@ -1,6 +1,6 @@
 RewriteEngine on
 
-RewriteCond $1 !^(index\.php|assets|uploads)
+RewriteCond $1 !^(index\.php|assets|upload)
 #Your public folder names
 
 RewriteRule ^(.*)$ index.php?/$1 [L]
