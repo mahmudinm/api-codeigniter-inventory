@@ -83,6 +83,12 @@ class Barang extends BD_Controller {
             $gambar = array('upload_data' => $this->upload->data());
             $file_name = $gambar['upload_data']['file_name'];
             $data['gambar'] = $file_name;
+
+            $this->db->where('id', $id);
+            $data = $this->db->get('barang')->row_array();
+            $gambar = $data['gambar'];
+            $path = './upload/'.$gambar;
+            unlink($path);
         }
         
         $this->db->where('id', $id);
