@@ -38,7 +38,12 @@ class Penjualan extends BD_Controller {
             'jumlah_harga' => $this->post('jumlah_harga'),
             'tanggal' => $this->post('tanggal')
         ];
-    
+    		
+        // Mengurangi jumlah data stock barang
+	    $this->db->set('stock', 'stock - ' . (int) $data['jumlah_barang'], FALSE);
+	    $this->db->where('id', $data['barang_id']);
+	    $this->db->update('barang'); 
+		    
         $insert = $this->db->insert('penjualan', $data);
 
         if ($insert) {
@@ -59,8 +64,40 @@ class Penjualan extends BD_Controller {
             'tanggal' => $this->post('tanggal')
         ];
         
+        // Penambahan STOCK Barang dan Pengurangan Jumlah Barang Penjualan
+        // Jumlah awal = 12
+        // Jumlah yang di isi = 10 adalah var $data['jumlah_barang'] 
+        // Jumlah awal - jumlah isi = 2
+        // Stock Barang jadi 8 + 2 = 10
+
+        // Pengurangan STOCK Barang dan Penambahan Jumlah Barang Penjualan
+        // Jumlah awal = 10
+        // Jumlah yang di isi = 12 adalah var $data['jumlah_barang'] 
+        // Jumlah awal (10) - jumlah isi (12) = -2
+        // Stock Barang jadi 8 + -2 = 6
+
         $this->db->where('id', $id);
-        $update = $this->db->update('penjualan', $data);
+        $data_jumlah = $this->db->get('penjualan')->row_array();
+        $jumlah_awal = $data_jumlah['jumlah_barang'];
+        
+        if ($jumlah_awal < $this->post('jumlah_barang')) {
+            // Mengurangi barang / memberikan item barang ke penjualan 
+            $total = $jumlah_awal - $this->post('jumlah_barang');
+            $this->db->set('stock', 'stock + ' . (int) $total, FALSE);
+            $this->db->where('id', $data['barang_id']);
+            $this->db->update('barang');             
+        } else if ($jumlah_awal > $this->post('jumlah_barang')) {
+            // Menambah barang / mengembalikan item barang ke database 
+            $total = $jumlah_awal - $this->post('jumlah_barang');
+            $this->db->set('stock', 'stock + ' . (int) $total, FALSE);
+            $this->db->where('id', $data['barang_id']);
+            $this->db->update('barang');
+        } else if ($jumlah_awal == $this->post('jumlah_barang')) {
+            // Do nothing
+        }
+
+        $this->db->where('id', $id);
+        $update = $this->db->update('penjualan', $data);    
 
         if ($update) {
             $this->response(['status' => 'success'], 200);
@@ -72,6 +109,15 @@ class Penjualan extends BD_Controller {
 
     public function delete_post($id)
     {
+        // Mengembalikan Barang yang telah di beli
+        $this->db->where('id', $id);
+        $data_jumlah = $this->db->get('penjualan')->row_array();
+        $jumlah_barang = $data_jumlah['jumlah_barang'];
+
+        $this->db->set('stock', 'stock + ' . (int) $jumlah_barang, FALSE);
+        $this->db->where('id', $data_jumlah['barang_id']);
+        $this->db->update('barang');             
+
         $this->db->where('id', $id);
         $delete = $this->db->delete('penjualan');
 
