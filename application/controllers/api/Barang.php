@@ -22,6 +22,18 @@ class Barang extends BD_Controller {
         $this->response($response, 200);
     }
 
+    public function list_get()
+    {
+        $barang = $this->db
+                        ->select('id, nama, harga')
+                        ->get('barang')
+                        ->result();
+        $response['status'] = "success";
+        $response['data'] = $barang;
+        
+        $this->response($response, 200);
+    }
+
     public function index_post()
     {
         $data = [
