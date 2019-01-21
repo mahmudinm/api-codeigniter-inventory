@@ -36,7 +36,7 @@ class Penjualan extends BD_Controller {
             'barang_id' => $this->post('barang_id'),
             'jumlah_barang' => $this->post('jumlah_barang'),
             'jumlah_harga' => $this->post('jumlah_harga'),
-            'tanggal' => $this->post('tanggal')
+            'tanggal' => date("Y-m-d H:i:s")
         ];
     		
         // Mengurangi jumlah data stock barang
@@ -61,7 +61,7 @@ class Penjualan extends BD_Controller {
             'barang_id' => $this->post('barang_id'),
             'jumlah_barang' => $this->post('jumlah_barang'),
             'jumlah_harga' => $this->post('jumlah_harga'),
-            'tanggal' => $this->post('tanggal')
+            'tanggal' => $date("Y-m-d H:i:s")
         ];
         
         // Penambahan STOCK Barang dan Pengurangan Jumlah Barang Penjualan
