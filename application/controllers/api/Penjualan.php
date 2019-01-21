@@ -13,21 +13,33 @@ class Penjualan extends BD_Controller {
         $this->load->database();
     }
 
+
     public function index_get()
     {
-        // $penjualan = $this->db->select('penjualan.*, barang.*')
-        $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
-                            ->from('penjualan')
-                            ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
-                            ->get()
-                            ->result();
+        if ($this->query('search')) {
+            $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
+                    ->from('penjualan')
+                    ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
+                    ->like('barang.nama', $this->query('search'))
+                    ->get()
+                    ->result();
+            $response['status'] = "success";
+            $response['data'] = $penjualan;        
+            $this->response($response, 200);
+        } else {
+            $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
+                                ->from('penjualan')
+                                ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
+                                ->get()
+                                ->result();
 
 
-        // $penjualan = $this->db->get('penjualan')->result();
-        $response['status'] = "success";
-        $response['data'] = $penjualan;
-        
-        $this->response($response, 200);
+            // $penjualan = $this->db->get('penjualan')->result();
+            $response['status'] = "success";
+            $response['data'] = $penjualan;
+            
+            $this->response($response, 200);
+        }
     }
 
     public function index_post()

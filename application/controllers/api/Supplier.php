@@ -13,13 +13,23 @@ class Supplier extends BD_Controller {
         $this->load->database();
     }
 
+
     public function index_get()
     {
-        $supplier = $this->db->get('supplier')->result();
-        $response['status'] = "success";
-        $response['data'] = $supplier;
-        
-        $this->response($response, 200);
+        if ($this->query('search')) {
+            $this->db->like('nama', $this->query('search'));
+            $supplier = $this->db->get('supplier')->result();
+            $response['status'] = "success";
+            $response['data'] = $supplier;
+
+            $this->response($response, 200);
+        } else {
+            $supplier = $this->db->get('supplier')->result();
+            $response['status'] = "success";
+            $response['data'] = $supplier;
+
+            $this->response($response, 200);
+        }
     }
 
     public function index_post()

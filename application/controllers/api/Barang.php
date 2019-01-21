@@ -12,14 +12,25 @@ class Barang extends BD_Controller {
         $this->auth();
         $this->load->database();
     }
+    
 
     public function index_get()
     {
-        $barang = $this->db->get('barang')->result();
-        $response['status'] = "success";
-        $response['data'] = $barang;
+        if ($this->query('search')) {
+            $this->db->like('nama', $this->query('search'));
+            $barang = $this->db->get('barang')->result();
+            $response['status'] = "success";
+            $response['data'] = $barang;
+
+            $this->response($response, 200);
+        } else {
+            $barang = $this->db->get('barang')->result();
+            $response['status'] = "success";
+            $response['data'] = $barang;
+
+            $this->response($response, 200);
+        }
         
-        $this->response($response, 200);
     }
 
     public function list_get()
