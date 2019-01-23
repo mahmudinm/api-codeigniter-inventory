@@ -11,24 +11,34 @@ class Supplier extends BD_Controller {
         parent::__construct();
         $this->auth();
         $this->load->database();
+        $this->load->model('Supplier_model');
+        $this->load->library('pagination');
     }
 
 
     public function index_get()
-    {
+    {        
+        $config = array();
+        $config["base_url"] = base_url() . "api/supplier";
+        $config["total_rows"] = $this->Supplier_model->count();
+        $config["per_page"] = 10;
+        $config["uri_segment"] = 3;
+        $this->pagination->initialize($config);
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        
         if ($this->query('search')) {
-            $this->db->like('nama', $this->query('search'));
-            $supplier = $this->db->get('supplier')->result();
-            $response['status'] = "success";
-            $response['data'] = $supplier;
+            // http://localhost/android_codeigniter_inventory/api/supplier/2?search=ma
+            $data["data"] = $this->Supplier_model->fetch($config["per_page"], $page, $this->query('search'));
+            $data["links"] = $this->pagination->create_links();
+            $data['status'] = "success";
 
-            $this->response($response, 200);
+            $this->response($data, 200);
         } else {
-            $supplier = $this->db->get('supplier')->result();
-            $response['status'] = "success";
-            $response['data'] = $supplier;
+            $data["data"] = $this->Supplier_model->fetch($config["per_page"], $page, "");
+            $data["links"] = $this->pagination->create_links();
+            $data['status'] = "success";
 
-            $this->response($response, 200);
+            $this->response($data, 200);
         }
     }
 
