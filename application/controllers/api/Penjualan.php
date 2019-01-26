@@ -9,17 +9,30 @@ class Penjualan extends BD_Controller {
     {
         // Construct the parent class
         parent::__construct();
-        $this->auth();
+        // $this->auth();
         $this->load->database();
+        $this->load->model('Penjualan_model');
+        $this->load->library('pagination');
     }
 
 
     public function index_get()
     {
+
+        $config = array();
+        $config["base_url"] = base_url() . "api/penjualan";
+        $config["total_rows"] = $this->Penjualan_model->count();
+        $config["per_page"] = 10;
+        $config["uri_segment"] = 3;
+        $this->pagination->initialize($config);
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+
         if ($this->query('search')) {
             $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
                     ->from('penjualan')
                     ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
+                    ->limit($config["per_page"], $page)
+                    ->order_by('id', 'ASC')
                     ->like('barang.nama', $this->query('search'))
                     ->get()
                     ->result();
@@ -30,10 +43,10 @@ class Penjualan extends BD_Controller {
             $penjualan = $this->db->select('penjualan.*, barang.nama, barang.harga')
                                 ->from('penjualan')
                                 ->join('barang', 'penjualan.barang_id = barang.id', 'LEFT')
+                                ->order_by('id', 'ASC')
+                                ->limit($config["per_page"], $page)
                                 ->get()
                                 ->result();
-
-
             // $penjualan = $this->db->get('penjualan')->result();
             $response['status'] = "success";
             $response['data'] = $penjualan;
