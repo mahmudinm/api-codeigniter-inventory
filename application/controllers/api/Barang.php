@@ -9,33 +9,17 @@ class Barang extends BD_Controller {
     {
         // Construct the parent class
         parent::__construct();
-        // $this->auth();
+        $this->auth();
         $this->load->database();
-        $this->load->model('Barang_model');
-        $this->load->library('pagination');
     }
     
 
     public function index_get()
     {
-        $config["base_url"] = base_url() . "api/barang";
-        $config["total_rows"] = $this->Barang_model->count();
-        $config["per_page"] = 10;
-        $config["uri_segment"] = 3;
-        $this->pagination->initialize($config);$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        $response["data"] = $this->db->get('barang')->result();
+        $response['status'] = "success";
 
-        if ($this->query('search')) {
-            $response["data"] = $this->Barang_model->fetch($config["per_page"], $page, $this->query('search'));
-            $response['status'] = "success";
-
-            $this->response($response, 200);
-        } else {
-            $response["data"] = $this->Barang_model->fetch($config["per_page"], $page, "");
-            $response['status'] = "success";
-
-            $this->response($response, 200);
-        }
-        
+        $this->response($response, 200);   
     }
 
     public function list_get()

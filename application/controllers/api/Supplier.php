@@ -26,19 +26,11 @@ class Supplier extends BD_Controller {
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         
-        if ($this->query('search')) {
-            // http://localhost/android_codeigniter_inventory/api/supplier/2?search=ma
-            $response["data"] = $this->Supplier_model->fetch($config["per_page"], $page, $this->query('search'));
-            $response['status'] = "success";
+        $response["data"] = $this->Supplier_model->fetch($config["per_page"], $page);
+        $response['status'] = "success";
 
-            $this->response($response, 200);
-        } else {
-            // $response = $this->Supplier_model->fetch($config["per_page"], $page, "");
-            $response["data"] = $this->Supplier_model->fetch($config["per_page"], $page, "");
-            $response['status'] = "success";
+        $this->response($response, 200);
 
-            $this->response($response, 200);
-        }
     }
 
     public function index_post()

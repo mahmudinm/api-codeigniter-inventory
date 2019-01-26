@@ -7,9 +7,8 @@ class Supplier_model extends CI_Model {
        return $this->db->count_all("supplier");
    }
 
-   public function fetch($limit, $start, $nama) {
+   public function fetch($limit, $start) {
        $this->db->limit($limit, $start);
-       $this->db->like('nama', $nama);
        $this->db->order_by('id', 'ASC');
        $query = $this->db->get("supplier");
        if ($query->num_rows() > 0) {
